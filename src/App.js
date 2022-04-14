@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const newBlog = { title, author, url }
 
@@ -40,11 +42,14 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      setNotification({ text: `Hi ${user.name}!`, type: 'success' })
+      setTimeout(() => setNotification(null), 3000)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (error) {
-      console.log(error.message)
+      setNotification({ text: `Wrong username or password`, type: 'error' })
+      setTimeout(() => setNotification(null), 3000)
     }
   }
 
@@ -58,14 +63,24 @@ const App = () => {
     try {
       const savedBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(savedBlog))
+      setNotification({
+        text: `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
+        type: 'success',
+      })
+      setTimeout(() => setNotification(null), 3000)
     } catch (error) {
-      console.log(error)
+      setNotification({
+        text: `an error occurred while adding the blog`,
+        type: 'error',
+      })
+      setTimeout(() => setNotification(null), 3000)
     }
   }
 
-  if (user !== null)
+  if (user !== null) {
     return (
       <div>
+        <Notification notification={notification} />
         <h2>blogs</h2>
         <p>
           {user.name} logged in{' '}
@@ -91,17 +106,20 @@ const App = () => {
         ))}
       </div>
     )
+  }
 
   return (
     <div>
-      <h2>Log in to application</h2>
-      <LoginForm
-        username={username}
-        password={password}
-        handleSubmit={handleLogin}
-        onUsernameChange={({ target }) => setUsername(target.value)}
-        onPasswordChange={({ target }) => setPassword(target.value)}
-      />
+      <Notification notification={notification} />
+      <div>
+        <LoginForm
+          username={username}
+          password={password}
+          handleSubmit={handleLogin}
+          onUsernameChange={({ target }) => setUsername(target.value)}
+          onPasswordChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
     </div>
   )
 }
