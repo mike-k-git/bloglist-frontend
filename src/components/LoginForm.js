@@ -1,10 +1,15 @@
-const LoginForm = ({
-  username,
-  password,
-  handleSubmit,
-  onUsernameChange,
-  onPasswordChange,
-}) => {
+import { useState } from 'react'
+
+const LoginForm = ({ login }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    login({ username, password })
+    setUsername('')
+    setPassword('')
+  }
   return (
     <div>
       <h2>Log in to application</h2>
@@ -17,7 +22,7 @@ const LoginForm = ({
             id="username"
             autoComplete="username"
             value={username}
-            onChange={onUsernameChange}
+            onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
@@ -28,7 +33,7 @@ const LoginForm = ({
             id="password"
             autoComplete="new-password"
             value={password}
-            onChange={onPasswordChange}
+            onChange={({ target }) => setPassword(target.value)}
           />
         </div>
         <button type="submit">login</button>
