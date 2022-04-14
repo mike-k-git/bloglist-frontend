@@ -15,6 +15,7 @@ const LoginForm = ({
             type="text"
             name="username"
             id="username"
+            autoComplete="username"
             value={username}
             onChange={onUsernameChange}
           />
@@ -25,6 +26,7 @@ const LoginForm = ({
             type="password"
             name="password"
             id="password"
+            autoComplete="new-password"
             value={password}
             onChange={onPasswordChange}
           />
