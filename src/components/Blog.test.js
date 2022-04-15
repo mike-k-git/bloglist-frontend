@@ -57,4 +57,15 @@ describe('<Blog />', () => {
     const likesSpan = container.querySelector('.blog-likes')
     expect(likesSpan).toBeDefined()
   })
+
+  test('if the like button is clicked twice, the event handler is called twice', async () => {
+    const viewButton = screen.getByText('view')
+    await userEvent.click(viewButton)
+
+    const likeButton = screen.getByText('like')
+    await userEvent.click(likeButton)
+    await userEvent.click(likeButton)
+
+    expect(likes.mock.calls).toHaveLength(2)
+  })
 })
