@@ -42,7 +42,7 @@ const App = () => {
       setTimeout(() => setNotification(null), 3000)
       setUser(user)
     } catch (error) {
-      setNotification({ text: `Wrong username or password`, type: 'error' })
+      setNotification({ text: 'Wrong username or password', type: 'error' })
       setTimeout(() => setNotification(null), 3000)
     }
   }
@@ -65,7 +65,7 @@ const App = () => {
       setTimeout(() => setNotification(null), 3000)
     } catch (error) {
       setNotification({
-        text: `an error occurred while adding the blog`,
+        text: 'an error occurred while adding the blog',
         type: 'error',
       })
       setTimeout(() => setNotification(null), 3000)
