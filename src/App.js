@@ -56,7 +56,8 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const savedBlog = await blogService.create(newBlog)
-      setBlogs(blogs.concat(savedBlog))
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
       setNotification({
         text: `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
         type: 'success',
@@ -89,6 +90,15 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blog) => {
+    const ok = window.confirm(`Romove blog ${blog.title} by ${blog.user.name}`)
+
+    if (ok) {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter((b) => b.id !== blog.id))
+    }
+  }
+
   if (user !== null) {
     return (
       <div>
@@ -100,13 +110,19 @@ const App = () => {
             logout
           </button>
         </p>
-        <Togglable ref={blogFormRef}>
+        <Togglable ref={blogFormRef} buttonLabel="create new">
           <BlogForm createBlog={createBlog} />
         </Togglable>
         {blogs
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <Blog key={blog.id} blog={blog} likes={() => increaseLikes(blog)} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likes={() => increaseLikes(blog)}
+              removeBlog={() => removeBlog(blog)}
+              currentUser={user.name}
+            />
           ))}
       </div>
     )

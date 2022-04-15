@@ -1,5 +1,7 @@
 import { useState } from 'react'
-const Blog = ({ blog, likes }) => {
+import PropTypes from 'prop-types'
+
+const Blog = ({ blog, likes, currentUser, removeBlog }) => {
   const [fullInfo, setFullInfo] = useState(false)
 
   const toggleFullInfo = () => {
@@ -29,6 +31,9 @@ const Blog = ({ blog, likes }) => {
           likes {blog.likes} <button onClick={likes}>like</button>
         </div>
         <div>{blog.user.name}</div>
+        {currentUser === blog.user.username && (
+          <button onClick={removeBlog}>remove</button>
+        )}
       </div>
     )
   }
@@ -38,6 +43,24 @@ const Blog = ({ blog, likes }) => {
       {blog.title} {blog.author} <button onClick={toggleFullInfo}>view</button>
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.shape({
+    likes: PropTypes.number.isRequired,
+    author: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    user: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  likes: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
+  currentUser: PropTypes.string.isRequired,
 }
 
 export default Blog
