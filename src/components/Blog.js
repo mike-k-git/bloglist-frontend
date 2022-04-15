@@ -1,5 +1,5 @@
 import { useState } from 'react'
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likes }) => {
   const [fullInfo, setFullInfo] = useState(false)
 
   const toggleFullInfo = () => {
@@ -26,7 +26,7 @@ const Blog = ({ blog }) => {
         </div>
         <div>{blog.url}</div>
         <div>
-          likes {blog.likes} <button>like</button>
+          likes {blog.likes} <button onClick={likes}>like</button>
         </div>
         <div>{blog.user.name}</div>
       </div>
