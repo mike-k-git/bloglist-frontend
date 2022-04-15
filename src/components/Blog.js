@@ -21,16 +21,17 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
 
   if (fullInfo) {
     return (
-      <div style={style}>
+      <div style={style} className="blog-item">
         <div>
-          {blog.title} {blog.author}{' '}
+          <span className="blog-title">{blog.title}</span>{' '}
+          <span className="blog-author">{blog.author}</span>{' '}
           <button onClick={toggleFullInfo}>hide</button>
         </div>
-        <div>{blog.url}</div>
-        <div>
+        <div className="blog-url">{blog.url}</div>
+        <div className="blog-likes">
           likes {blog.likes} <button onClick={likes}>like</button>
         </div>
-        <div>{blog.user.name}</div>
+        <div className="blog-user">{blog.user.name}</div>
         {currentUser === blog.user.username && (
           <button onClick={removeBlog}>remove</button>
         )}
@@ -40,7 +41,9 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
 
   return (
     <div style={style}>
-      {blog.title} {blog.author} <button onClick={toggleFullInfo}>view</button>
+      <span className="blog-title">{blog.title}</span>{' '}
+      <span className="blog-author">{blog.author}</span>{' '}
+      <button onClick={toggleFullInfo}>view</button>
     </div>
   )
 }
