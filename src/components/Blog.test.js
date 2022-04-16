@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import userEvent from '@testing-library/user-event/'
+import renderer from 'react-test-renderer'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
@@ -68,4 +69,30 @@ describe('<Blog />', () => {
 
     expect(likes.mock.calls).toHaveLength(2)
   })
+})
+
+it('renders correctly', () => {
+  const tree = renderer
+    .create(
+      <Blog
+        blog={{
+          title: 'TDD harms architecture',
+          url: 'http://www.u.arizona.edu/',
+          author: 'Michael Chan',
+          id: '1293179231',
+          likes: 0,
+          user: {
+            username: 'username',
+            name: 'name',
+            id: '123123976123',
+          },
+        }}
+        likes={jest.fn()}
+        removeBlog={jest.fn()}
+        currentUser={'username'}
+      />
+    )
+    .toJSON()
+
+  expect(tree).toMatchSnapshot()
 })

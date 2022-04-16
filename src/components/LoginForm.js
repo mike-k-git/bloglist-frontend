@@ -14,7 +14,7 @@ const LoginForm = ({ login }) => {
   return (
     <div>
       <h2>Log in to application</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-cy="login-submit">
         <div>
           Username{' '}
           <input
