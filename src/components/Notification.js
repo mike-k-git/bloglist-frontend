@@ -9,7 +9,11 @@ const Notification = ({ notification }) => {
     borderRadius: 5,
     borderStyle: 'dashed',
   }
-  return <div style={style}>{text}</div>
+  return (
+    <div style={style} data-cy="notification">
+      {text}
+    </div>
+  )
 }
 
 Notification.propTypes = {

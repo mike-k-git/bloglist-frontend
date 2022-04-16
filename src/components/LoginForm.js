@@ -14,7 +14,7 @@ const LoginForm = ({ login }) => {
   return (
     <div>
       <h2>Log in to application</h2>
-      <form onSubmit={handleSubmit} data-cy="login-submit">
+      <form onSubmit={handleSubmit} data-cy="login-form">
         <div>
           Username{' '}
           <input
@@ -23,6 +23,7 @@ const LoginForm = ({ login }) => {
             id="username"
             autoComplete="username"
             value={username}
+            data-cy="username-input"
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
@@ -34,10 +35,13 @@ const LoginForm = ({ login }) => {
             id="password"
             autoComplete="new-password"
             value={password}
+            data-cy="password-input"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">login</button>
+        <button type="submit" data-cy="login-submit">
+          login
+        </button>
       </form>
     </div>
   )
