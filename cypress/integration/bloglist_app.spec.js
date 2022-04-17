@@ -93,5 +93,40 @@ describe('Blog app', () => {
         })
       })
     })
+
+    describe('and several blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'React patterns',
+          author: 'Michael Chan',
+          url: 'https://reactpatterns.com/',
+          likes: 5,
+        })
+
+        cy.createBlog({
+          title: 'Go To Statement Considered Harmful',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+          likes: 10,
+        })
+
+        cy.createBlog({
+          title: 'Canonical string reduction',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+          likes: 15,
+        })
+
+        cy.visit('http://localhost:3000')
+      })
+
+      it('and ordered according to likes with the blog with the most likes being first', function () {
+        cy.get('[data-cy=show-bloginfo]').click({ multiple: true })
+        cy.get('[data-cy=blog-item]')
+          .first()
+          .should('contain', 'Canonical string reduction')
+        cy.get('[data-cy=blog-item').last().should('contain', 'React patterns')
+      })
+    })
   })
 })

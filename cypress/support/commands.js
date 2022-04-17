@@ -42,7 +42,7 @@ Cypress.Commands.add('createUser', ({ name, username, password }) => {
   })
 })
 
-Cypress.Commands.add('createBlog', ({ title, author, url }) => {
+Cypress.Commands.add('createBlog', ({ title, author, url, likes = 0 }) => {
   cy.request({
     method: 'POST',
     url: 'http://localhost:3003/api/blogs',
@@ -50,6 +50,7 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
       title,
       author,
       url,
+      likes,
     },
     headers: {
       Authorization: `Bearer ${

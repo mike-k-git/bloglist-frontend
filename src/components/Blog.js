@@ -21,7 +21,7 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
 
   if (fullInfo) {
     return (
-      <div style={style} className="blog-item">
+      <div style={style} className="blog-item" data-cy="blog-item">
         <div>
           <span className="blog-title">{blog.title}</span>{' '}
           <span className="blog-author">{blog.author}</span>{' '}
@@ -45,7 +45,7 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
   }
 
   return (
-    <div style={style}>
+    <div style={style} data-cy="blog-item">
       <span className="blog-title">{blog.title}</span>{' '}
       <span className="blog-author">{blog.author}</span>{' '}
       <button onClick={toggleFullInfo} data-cy="show-bloginfo">
