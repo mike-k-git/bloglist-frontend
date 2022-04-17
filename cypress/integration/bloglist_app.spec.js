@@ -1,12 +1,16 @@
 describe('Blog app', () => {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.createUser({
       name: 'Kacey Steinhammer',
       username: 'admin',
       password: 'admin',
-    }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
+    })
+    cy.createUser({
+      name: 'Thorstein Dunridge',
+      username: 'root',
+      password: 'root',
+    })
     cy.visit('http://localhost:3000')
   })
 
@@ -40,32 +44,15 @@ describe('Blog app', () => {
 
   describe('When logged in', function () {
     beforeEach(function () {
-      cy.request('POST', 'http://localhost:3003/api/login', {
-        username: 'admin',
-        password: 'admin',
-      }).then(({ body }) => {
-        localStorage.setItem('loggedUser', JSON.stringify(body))
-        cy.visit('http://localhost:3000')
-      })
+      cy.login({ username: 'admin', password: 'admin' })
     })
 
     it('a blog can be created', function () {
-      const blog = {
-        title: 'React patterns',
-        author: 'Michael Chan',
-        url: 'https://reactpatterns.com/',
-      }
-
-      cy.request({
-        method: 'POST',
-        url: 'http://localhost:3003/api/blogs',
-        body: blog,
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem('loggedUser')).token
-          }`,
-        },
-      })
+      cy.contains('create new').click()
+      cy.get('[data-cy=blog-title]').type('React patterns')
+      cy.get('[data-cy=blog-author]').type('Michael Chan')
+      cy.get('[data-cy=blog-url]').type('https://reactpatterns.com/')
+      cy.get('[data-cy=blog-create]').click()
       cy.visit('http://localhost:3000')
 
       cy.contains('React patterns')
@@ -74,21 +61,10 @@ describe('Blog app', () => {
 
     describe('and blog is exists', function () {
       beforeEach(function () {
-        const blog = {
+        cy.createBlog({
           title: 'React patterns',
           author: 'Michael Chan',
           url: 'https://reactpatterns.com/',
-        }
-
-        cy.request({
-          method: 'POST',
-          url: 'http://localhost:3003/api/blogs',
-          body: blog,
-          headers: {
-            Authorization: `Bearer ${
-              JSON.parse(localStorage.getItem('loggedUser')).token
-            }`,
-          },
         })
         cy.visit('http://localhost:3000')
       })
@@ -97,6 +73,24 @@ describe('Blog app', () => {
         cy.get('[data-cy=show-bloginfo]').click()
         cy.get('[data-cy=like-submit]').click()
         cy.contains('likes 1')
+      })
+
+      it('can remove own blog', function () {
+        cy.get('[data-cy=show-bloginfo]').click()
+        cy.get('[data-cy=blog-remove]').click()
+        cy.contains('React patterns').should('not.exist')
+        cy.contains('Michael Chan').should('not.exist')
+      })
+
+      describe('and blog of another user exists', function () {
+        beforeEach(function () {
+          cy.login({ username: 'root', password: 'root' })
+        })
+
+        it('cannot remove blog', function () {
+          cy.get('[data-cy=show-bloginfo]').click()
+          cy.get('[data-cy=blog-remove]').should('not.exist')
+        })
       })
     })
   })

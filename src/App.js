@@ -106,7 +106,7 @@ const App = () => {
         <h2>blogs</h2>
         <p>
           {user.name} logged in{' '}
-          <button type="submit" onClick={logout}>
+          <button type="submit" onClick={logout} data-cy="logout-submit">
             logout
           </button>
         </p>
