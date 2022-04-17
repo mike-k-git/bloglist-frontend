@@ -49,7 +49,7 @@ describe('Blog app', () => {
       })
     })
 
-    it('A blog can be created', function () {
+    it('a blog can be created', function () {
       const blog = {
         title: 'React patterns',
         author: 'Michael Chan',
@@ -70,6 +70,34 @@ describe('Blog app', () => {
 
       cy.contains('React patterns')
       cy.contains('Michael Chan')
+    })
+
+    describe('and blog is exists', function () {
+      beforeEach(function () {
+        const blog = {
+          title: 'React patterns',
+          author: 'Michael Chan',
+          url: 'https://reactpatterns.com/',
+        }
+
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
+          body: blog,
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem('loggedUser')).token
+            }`,
+          },
+        })
+        cy.visit('http://localhost:3000')
+      })
+
+      it('can like a blog', function () {
+        cy.get('[data-cy=show-bloginfo]').click()
+        cy.get('[data-cy=like-submit]').click()
+        cy.contains('likes 1')
+      })
     })
   })
 })

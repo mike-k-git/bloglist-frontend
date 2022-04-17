@@ -29,7 +29,10 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
         </div>
         <div className="blog-url">{blog.url}</div>
         <div className="blog-likes">
-          likes {blog.likes} <button onClick={likes}>like</button>
+          <span>likes {blog.likes}</span>{' '}
+          <button onClick={likes} data-cy="like-submit">
+            like
+          </button>
         </div>
         <div className="blog-user">{blog.user.name}</div>
         {currentUser === blog.user.username && (
@@ -43,7 +46,9 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
     <div style={style}>
       <span className="blog-title">{blog.title}</span>{' '}
       <span className="blog-author">{blog.author}</span>{' '}
-      <button onClick={toggleFullInfo}>view</button>
+      <button onClick={toggleFullInfo} data-cy="show-bloginfo">
+        view
+      </button>
     </div>
   )
 }
