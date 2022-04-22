@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 
-const Notification = ({ notification }) => {
-  if (!notification) return null;
-  const { text, type } = notification;
+const Notification = (props) => {
+  const { text, type } = props.notification;
+  if (!text) return null;
   const style = {
     color: type === "success" ? "green" : "red",
     fontSize: 20,

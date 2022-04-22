@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
@@ -6,11 +7,18 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import {
+  createNotification,
+  removeNotification,
+} from "./components/notificationSlice";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
+  //const [notification, setNotification] = useState(null);
+  const notification = useSelector((state) => state.notification);
+
+  const dispatch = useDispatch();
 
   const blogFormRef = useRef();
 
@@ -38,12 +46,19 @@ const App = () => {
       const user = await loginService.login(credentials);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setNotification({ text: `Hi ${user.name}!`, type: "success" });
-      setTimeout(() => setNotification(null), 3000);
+      dispatch(
+        createNotification({ text: `Hi ${user.name}!`, type: "success" })
+      );
+      setTimeout(() => dispatch(removeNotification()), 3000);
       setUser(user);
     } catch (error) {
-      setNotification({ text: "Wrong username or password", type: "error" });
-      setTimeout(() => setNotification(null), 3000);
+      dispatch(
+        createNotification({
+          text: "Wrong username or password",
+          type: "error",
+        })
+      );
+      setTimeout(() => dispatch(removeNotification()), 3000);
     }
   };
 
@@ -58,17 +73,21 @@ const App = () => {
       const savedBlog = await blogService.create(newBlog);
       const blogs = await blogService.getAll();
       setBlogs(blogs);
-      setNotification({
-        text: `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
-        type: "success",
-      });
-      setTimeout(() => setNotification(null), 3000);
+      dispatch(
+        createNotification({
+          text: `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
+          type: "success",
+        })
+      );
+      setTimeout(() => dispatch(removeNotification()), 3000);
     } catch (error) {
-      setNotification({
-        text: "an error occurred while adding the blog",
-        type: "error",
-      });
-      setTimeout(() => setNotification(null), 3000);
+      dispatch(
+        createNotification({
+          text: "an error occurred while adding the blog",
+          type: "error",
+        })
+      );
+      setTimeout(() => dispatch(removeNotification()), 3000);
     }
   };
 
