@@ -7,15 +7,11 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import {
-  createNotification,
-  removeNotification,
-} from "./components/notificationSlice";
+import { showNotificationWithTimeout } from "./reducers/notificationSlice";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  //const [notification, setNotification] = useState(null);
   const notification = useSelector((state) => state.notification);
 
   const dispatch = useDispatch();
@@ -46,19 +42,12 @@ const App = () => {
       const user = await loginService.login(credentials);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      dispatch(
-        createNotification({ text: `Hi ${user.name}!`, type: "success" })
-      );
-      setTimeout(() => dispatch(removeNotification()), 3000);
+      dispatch(showNotificationWithTimeout(`Hi ${user.name}!`, "success"));
       setUser(user);
     } catch (error) {
       dispatch(
-        createNotification({
-          text: "Wrong username or password",
-          type: "error",
-        })
+        showNotificationWithTimeout(`Wrong username or password`, "error")
       );
-      setTimeout(() => dispatch(removeNotification()), 3000);
     }
   };
 
@@ -74,20 +63,18 @@ const App = () => {
       const blogs = await blogService.getAll();
       setBlogs(blogs);
       dispatch(
-        createNotification({
-          text: `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
-          type: "success",
-        })
+        showNotificationWithTimeout(
+          `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
+          "success"
+        )
       );
-      setTimeout(() => dispatch(removeNotification()), 3000);
     } catch (error) {
       dispatch(
-        createNotification({
-          text: "an error occurred while adding the blog",
-          type: "error",
-        })
+        showNotificationWithTimeout(
+          "an error occurred while adding the blog",
+          "error"
+        )
       );
-      setTimeout(() => dispatch(removeNotification()), 3000);
     }
   };
 
