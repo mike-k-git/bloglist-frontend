@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+//import { StrictMode } from "react";
 import App from "./App";
 import { createRoot } from "react-dom/client";
 import { store } from "./store";
@@ -8,9 +8,9 @@ const container = document.getElementById("app");
 const root = createRoot(container);
 
 root.render(
-  <StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </StrictMode>
+  //<StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>
+  //</StrictMode>
 );

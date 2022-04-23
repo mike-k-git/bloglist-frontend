@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
@@ -8,25 +7,14 @@ import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { showNotificationWithTimeout } from "./reducers/notificationSlice";
+import BlogList from "./components/BlogList";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const notification = useSelector((state) => state.notification);
-
+  const { notification } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const blogFormRef = useRef();
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      const blogs = await blogService.getAll();
-      setBlogs(blogs);
-    };
-    if (user) {
-      fetchBlogs();
-    }
-  }, [user]);
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedUser");
@@ -56,55 +44,6 @@ const App = () => {
     setUser(null);
   };
 
-  const createBlog = async (newBlog) => {
-    try {
-      blogFormRef.current.toggleVisibility();
-      const savedBlog = await blogService.create(newBlog);
-      const blogs = await blogService.getAll();
-      setBlogs(blogs);
-      dispatch(
-        showNotificationWithTimeout(
-          `A new blog ${savedBlog.title} by ${savedBlog.author} added`,
-          "success"
-        )
-      );
-    } catch (error) {
-      dispatch(
-        showNotificationWithTimeout(
-          "an error occurred while adding the blog",
-          "error"
-        )
-      );
-    }
-  };
-
-  const increaseLikes = async ({ id, author, likes, title, url, user }) => {
-    try {
-      const draftBlog = {
-        author,
-        title,
-        url,
-        likes: likes + 1,
-        user: user.id,
-      };
-      const updatedBlog = await blogService.update(draftBlog, id);
-      setBlogs(
-        blogs.map((b) => (b.id !== id ? b : { ...b, likes: updatedBlog.likes }))
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const removeBlog = async (blog) => {
-    const ok = window.confirm(`Romove blog ${blog.title} by ${blog.user.name}`);
-
-    if (ok) {
-      await blogService.remove(blog.id);
-      setBlogs(blogs.filter((b) => b.id !== blog.id));
-    }
-  };
-
   if (user !== null) {
     return (
       <div>
@@ -117,21 +56,11 @@ const App = () => {
           </button>
         </p>
         <Togglable ref={blogFormRef} buttonLabel="create new">
-          <BlogForm createBlog={createBlog} />
+          <BlogForm
+            onBlogCreate={() => blogFormRef.current.toggleVisibility()}
+          />
         </Togglable>
-        <div>
-          {blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                likes={() => increaseLikes(blog)}
-                removeBlog={() => removeBlog(blog)}
-                currentUser={user.name}
-              />
-            ))}
-        </div>
+        <BlogList currentUser={user.name} />
       </div>
     );
   }

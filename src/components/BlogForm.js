@@ -1,14 +1,32 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { createBlog } from "../reducers/blogSlice";
+import { showNotificationWithTimeout } from "../reducers/notificationSlice";
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ onBlogCreate }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const handleSubmit = (event) => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    createBlog({ title, author, url });
+    try {
+      const result = await dispatch(
+        createBlog({ title, author, url })
+      ).unwrap();
+      onBlogCreate();
+      dispatch(
+        showNotificationWithTimeout(
+          `A new blog ${result.title} by ${result.author} added`,
+          "success"
+        )
+      );
+    } catch (error) {
+      dispatch(showNotificationWithTimeout(error.message, "error"));
+    }
     setAuthor("");
     setTitle("");
     setUrl("");
@@ -60,7 +78,7 @@ const BlogForm = ({ createBlog }) => {
 };
 
 BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
+  onBlogCreate: PropTypes.func.isRequired,
 };
 
 export default BlogForm;
