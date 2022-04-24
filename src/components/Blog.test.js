@@ -5,7 +5,7 @@ import renderer from "react-test-renderer";
 import Blog from "./Blog";
 
 describe("<Blog />", () => {
-  let container, likes, removeBlog, currentUser;
+  let container, handleLikeBlog, handleRemoveBlog, currentUser;
 
   beforeEach(() => {
     const blog = {
@@ -20,15 +20,15 @@ describe("<Blog />", () => {
         id: "123123976123",
       },
     };
-    likes = jest.fn();
-    removeBlog = jest.fn();
+    handleLikeBlog = jest.fn();
+    handleRemoveBlog = jest.fn();
     currentUser = "username";
 
     container = render(
       <Blog
         blog={blog}
-        likes={likes}
-        removeBlog={removeBlog}
+        onLikeBlog={handleLikeBlog}
+        onRemoveBlog={handleRemoveBlog}
         currentUser={currentUser}
       />
     ).container;
@@ -67,7 +67,7 @@ describe("<Blog />", () => {
     await userEvent.click(likeButton);
     await userEvent.click(likeButton);
 
-    expect(likes.mock.calls).toHaveLength(2);
+    expect(handleLikeBlog.mock.calls).toHaveLength(2);
   });
 });
 
@@ -87,8 +87,8 @@ it("renders correctly", () => {
             id: "123123976123",
           },
         }}
-        likes={jest.fn()}
-        removeBlog={jest.fn()}
+        onLikeBlog={jest.fn()}
+        onRemoveBlog={jest.fn()}
         currentUser={"username"}
       />
     )

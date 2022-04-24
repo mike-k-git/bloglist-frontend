@@ -12,15 +12,20 @@ const blogSlice = createSlice({
       .addCase(fetchBlogs.fulfilled, (state, action) => action.payload)
       .addCase(createBlog.fulfilled, (state, action) => {
         state.push(action.payload);
-      });
+      })
+      .addCase(updateBlog.fulfilled, (state, action) =>
+        state.map((b) => (b.id !== action.payload.id ? b : action.payload))
+      )
+      .addCase(removeBlog.fulfilled, (state, action) =>
+        state.filter((b) => b.id !== action.meta.arg)
+      );
   },
 });
 
-export const { blogAdded } = blogSlice.actions;
-
 export default blogSlice.reducer;
 
-export const selectAllBlogs = (state) => state.blogs.blogs;
+export const selectSortedBlogs = (state) =>
+  state.blogs.slice().sort((a, b) => b.likes - a.likes);
 
 export const fetchBlogs = createAsyncThunk(
   "blogs/fetchBlogs",
@@ -30,4 +35,14 @@ export const fetchBlogs = createAsyncThunk(
 export const createBlog = createAsyncThunk(
   "blogs/blogCreated",
   async (blog) => await blogService.create(blog)
+);
+
+export const updateBlog = createAsyncThunk(
+  "blogs/blogUpdated",
+  async (blogToUpdate) => await blogService.update(blogToUpdate)
+);
+
+export const removeBlog = createAsyncThunk(
+  "blogs/blogRemoved",
+  async (id) => await blogService.remove(id)
 );

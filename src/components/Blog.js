@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, likes, currentUser, removeBlog }) => {
+const Blog = ({ blog, onLikeBlog, currentUser, onRemoveBlog }) => {
   const [fullInfo, setFullInfo] = useState(false);
 
   const toggleFullInfo = () => {
@@ -30,13 +30,13 @@ const Blog = ({ blog, likes, currentUser, removeBlog }) => {
         <div className="blog-url">{blog.url}</div>
         <div className="blog-likes">
           <span>likes {blog.likes}</span>{" "}
-          <button onClick={likes} data-cy="like-submit">
+          <button onClick={onLikeBlog} data-cy="like-submit">
             like
           </button>
         </div>
         <div className="blog-user">{blog.user.name}</div>
         {currentUser === blog.user.name && (
-          <button onClick={removeBlog} data-cy="blog-remove">
+          <button onClick={onRemoveBlog} data-cy="blog-remove">
             remove
           </button>
         )}
@@ -68,8 +68,8 @@ Blog.propTypes = {
       id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  likes: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
+  onLikeBlog: PropTypes.func.isRequired,
+  onRemoveBlog: PropTypes.func.isRequired,
   currentUser: PropTypes.string.isRequired,
 };
 

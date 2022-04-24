@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
-import { fetchBlogs } from "../reducers/blogSlice";
+import {
+  fetchBlogs,
+  selectSortedBlogs,
+  updateBlog,
+  removeBlog,
+} from "../reducers/blogSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Blog from "./Blog";
-import blogService from "../services/blogs";
 import { showNotificationWithTimeout } from "../reducers/notificationSlice";
 
 const BlogList = ({ currentUser }) => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs);
-
+  const blogs = useSelector(selectSortedBlogs);
   useEffect(() => {
     const init = async () => {
       try {
@@ -21,27 +24,28 @@ const BlogList = ({ currentUser }) => {
     init();
   }, [dispatch]);
 
-  const increaseLikes = async (blog) => {
-    console.log(blog);
+  const handleLikeBlog = async (blog) => {
     try {
-      const draftBlog = {
+      const blogToUpdate = {
         ...blog,
+        user: blog.user.id,
+        likes: blog.likes + 1,
       };
-      const updatedBlog = await blogService.update(draftBlog, blog.id);
-
-      blogs.map((b) =>
-        b.id !== blog.id ? b : { ...b, likes: updatedBlog.likes }
-      );
+      await dispatch(updateBlog(blogToUpdate)).unwrap();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const removeBlog = async (blog) => {
-    const ok = window.confirm(`Romove blog ${blog.title} by ${blog.user.name}`);
+  const handleRemoveBlog = async (blog) => {
+    const ok = window.confirm(`Remove blog ${blog.title} by ${blog.user.name}`);
 
     if (ok) {
-      await blogService.remove(blog.id);
+      try {
+        await dispatch(removeBlog(blog.id)).unwrap();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -51,8 +55,8 @@ const BlogList = ({ currentUser }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          likes={() => increaseLikes(blog)}
-          removeBlog={() => removeBlog(blog)}
+          onLikeBlog={() => handleLikeBlog(blog)}
+          onRemoveBlog={() => handleRemoveBlog(blog)}
           currentUser={currentUser}
         />
       ))}

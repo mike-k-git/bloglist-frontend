@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  data-cy="blog-item"
+  style={
+    Object {
+      "border": "solid",
+      "fontSize": 20,
+      "lineHeight": "1.5em",
+      "marginBottom": 5,
+      "marginTop": 5,
+      "paddingBottom": 10,
+      "paddingLeft": 20,
+      "paddingTop": 10,
+    }
+  }
+>
+  <span
+    className="blog-title"
+  >
+    TDD harms architecture
+  </span>
+   
+  <span
+    className="blog-author"
+  >
+    Michael Chan
+  </span>
+   
+  <button
+    data-cy="show-bloginfo"
+    onClick={[Function]}
+  >
+    view
+  </button>
+</div>
+`;

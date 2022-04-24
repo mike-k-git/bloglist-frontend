@@ -8,6 +8,7 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { showNotificationWithTimeout } from "./reducers/notificationSlice";
 import BlogList from "./components/BlogList";
+import { createBlog } from "./reducers/blogSlice";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -44,6 +45,23 @@ const App = () => {
     setUser(null);
   };
 
+  const handleBlogCreate = async ({ title, author, url }) => {
+    blogFormRef.current.toggleVisibility();
+    try {
+      const result = await dispatch(
+        createBlog({ title, author, url })
+      ).unwrap();
+      dispatch(
+        showNotificationWithTimeout(
+          `A new blog ${result.title} by ${result.author} added`,
+          "success"
+        )
+      );
+    } catch (error) {
+      dispatch(showNotificationWithTimeout(error.message, "error"));
+    }
+  };
+
   if (user !== null) {
     return (
       <div>
@@ -56,9 +74,7 @@ const App = () => {
           </button>
         </p>
         <Togglable ref={blogFormRef} buttonLabel="create new">
-          <BlogForm
-            onBlogCreate={() => blogFormRef.current.toggleVisibility()}
-          />
+          <BlogForm onBlogCreate={handleBlogCreate} />
         </Togglable>
         <BlogList currentUser={user.name} />
       </div>
