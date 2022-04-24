@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
@@ -9,10 +9,10 @@ import loginService from "./services/login";
 import { showNotificationWithTimeout } from "./reducers/notificationSlice";
 import BlogList from "./components/BlogList";
 import { createBlog } from "./reducers/blogSlice";
+import { userSetted } from "./reducers/userSlice";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  const { notification } = useSelector((state) => state);
+  const { notification, user } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const blogFormRef = useRef();
@@ -21,7 +21,7 @@ const App = () => {
     const loggedUser = window.localStorage.getItem("loggedUser");
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
-      setUser(user);
+      dispatch(userSetted(user));
       blogService.setToken(user.token);
     }
   }, []);
@@ -32,7 +32,7 @@ const App = () => {
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
       blogService.setToken(user.token);
       dispatch(showNotificationWithTimeout(`Hi ${user.name}!`, "success"));
-      setUser(user);
+      dispatch(userSetted(user));
     } catch (error) {
       dispatch(
         showNotificationWithTimeout(`Wrong username or password`, "error")
@@ -42,7 +42,7 @@ const App = () => {
 
   const logout = () => {
     window.localStorage.removeItem("loggedUser");
-    setUser(null);
+    dispatch(userSetted(null));
   };
 
   const handleBlogCreate = async ({ title, author, url }) => {
