@@ -9,6 +9,7 @@ import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import BlogList from "./components/BlogList";
 import UserList from "./components/UserList";
+import User from "./components/User";
 
 import { blogService, loginService } from "./services";
 
@@ -90,12 +91,12 @@ const App = () => {
                   <Togglable ref={blogFormRef} buttonLabel="create new">
                     <BlogForm onBlogCreate={handleBlogCreate} />
                   </Togglable>
-                  {/* <BlogList currentUser={user.name} /> */}
-                  <BlogList currentUser={"asfasdf"} />
+                  <BlogList currentUser={user.name} />
                 </>
               }
             />
             <Route path="/users" element={<UserList />} />
+            <Route path="/users/:id" element={<User />} />
           </Routes>
         </>
       ) : (
