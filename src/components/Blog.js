@@ -1,76 +1,62 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { updateBlog, removeBlog } from "../reducers";
 
-const Blog = ({ blog, onLikeBlog, currentUser, onRemoveBlog }) => {
-  const [fullInfo, setFullInfo] = useState(false);
+const Blog = () => {
+  const id = useParams().id;
+  const blog = useSelector((state) =>
+    state.blogs.find((blog) => blog.id === id)
+  );
+  const currentUser = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const toggleFullInfo = () => {
-    setFullInfo(!fullInfo);
-  };
-
-  const style = {
-    fontSize: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    border: "solid",
-    marginTop: 5,
-    marginBottom: 5,
-    lineHeight: "1.5em",
-  };
-
-  if (fullInfo) {
-    return (
-      <div style={style} className="blog-item" data-cy="blog-item">
-        <div>
-          <span className="blog-title">{blog.title}</span>{" "}
-          <span className="blog-author">{blog.author}</span>{" "}
-          <button onClick={toggleFullInfo}>hide</button>
-        </div>
-        <div className="blog-url">{blog.url}</div>
-        <div className="blog-likes">
-          <span>likes {blog.likes}</span>{" "}
-          <button onClick={onLikeBlog} data-cy="like-submit">
-            like
-          </button>
-        </div>
-        <div className="blog-user">{blog.user.name}</div>
-        {currentUser === blog.user.name && (
-          <button onClick={onRemoveBlog} data-cy="blog-remove">
-            remove
-          </button>
-        )}
-      </div>
-    );
+  if (!blog) {
+    return null;
   }
 
+  const handleLikeBlog = async () => {
+    try {
+      const blogToUpdate = {
+        ...blog,
+        user: blog.user.id,
+        likes: blog.likes + 1,
+      };
+      await dispatch(updateBlog(blogToUpdate)).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveBlog = async () => {
+    const ok = window.confirm(`Remove blog ${blog.title} by ${blog.user.name}`);
+
+    if (ok) {
+      try {
+        await dispatch(removeBlog(blog.id)).unwrap();
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
-    <div style={style} data-cy="blog-item">
-      <span className="blog-title">{blog.title}</span>{" "}
-      <span className="blog-author">{blog.author}</span>{" "}
-      <button onClick={toggleFullInfo} data-cy="show-bloginfo">
-        view
-      </button>
+    <div>
+      <h1>{blog.title}</h1>
+      <div>
+        <a href={blog.url}>{blog.url}</a>
+      </div>
+      <div>
+        {blog.likes} likes <button onClick={handleLikeBlog}>like</button>
+      </div>
+      <div>added by {blog.user.name}</div>
+      {blog.user.username === currentUser.username && (
+        <div>
+          <button onClick={handleRemoveBlog}>remove</button>
+        </div>
+      )}
     </div>
   );
 };
-
-Blog.propTypes = {
-  blog: PropTypes.shape({
-    likes: PropTypes.number.isRequired,
-    author: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-    user: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  onLikeBlog: PropTypes.func.isRequired,
-  onRemoveBlog: PropTypes.func.isRequired,
-  currentUser: PropTypes.string.isRequired,
-};
-
 export default Blog;

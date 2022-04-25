@@ -8,6 +8,7 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import BlogList from "./components/BlogList";
+import Blog from "./components/Blog";
 import UserList from "./components/UserList";
 import User from "./components/User";
 
@@ -95,6 +96,7 @@ const App = () => {
                 </>
               }
             />
+            <Route path="/blogs/:id" element={<Blog />} />
             <Route path="/users" element={<UserList />} />
             <Route path="/users/:id" element={<User />} />
           </Routes>

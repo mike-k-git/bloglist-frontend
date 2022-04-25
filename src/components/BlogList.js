@@ -1,16 +1,27 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import Blog from "./Blog";
+import { Link } from "react-router-dom";
+//import Blog from "./Blog";
 import {
   fetchBlogs,
   selectSortedBlogs,
-  updateBlog,
-  removeBlog,
+  // updateBlog,
+  // removeBlog,
   showNotificationWithTimeout,
 } from "../reducers";
 
-const BlogList = ({ currentUser }) => {
+const BlogList = () => {
+  const style = {
+    fontSize: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    border: "solid",
+    marginTop: 5,
+    marginBottom: 5,
+    lineHeight: "1.5em",
+  };
   const dispatch = useDispatch();
   const blogs = useSelector(selectSortedBlogs);
   useEffect(() => {
@@ -25,41 +36,12 @@ const BlogList = ({ currentUser }) => {
     init();
   }, [dispatch]);
 
-  const handleLikeBlog = async (blog) => {
-    try {
-      const blogToUpdate = {
-        ...blog,
-        user: blog.user.id,
-        likes: blog.likes + 1,
-      };
-      await dispatch(updateBlog(blogToUpdate)).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRemoveBlog = async (blog) => {
-    const ok = window.confirm(`Remove blog ${blog.title} by ${blog.user.name}`);
-
-    if (ok) {
-      try {
-        await dispatch(removeBlog(blog.id)).unwrap();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   return (
     <div>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          onLikeBlog={() => handleLikeBlog(blog)}
-          onRemoveBlog={() => handleRemoveBlog(blog)}
-          currentUser={currentUser}
-        />
+        <div style={style} key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </div>
       ))}
     </div>
   );
