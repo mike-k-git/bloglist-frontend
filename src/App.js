@@ -1,20 +1,26 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import BlogForm from "./components/BlogForm";
+
+import { Routes, Route } from "react-router-dom";
+
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
-import { showNotificationWithTimeout } from "./reducers/notificationSlice";
+import BlogForm from "./components/BlogForm";
 import BlogList from "./components/BlogList";
-import { createBlog } from "./reducers/blogSlice";
-import { userSetted } from "./reducers/userSlice";
+import UserList from "./components/UserList";
+
+import { blogService, loginService } from "./services";
+
+import {
+  showNotificationWithTimeout,
+  createBlog,
+  userSetted,
+} from "./reducers";
 
 const App = () => {
   const { notification, user } = useSelector((state) => state);
   const dispatch = useDispatch();
-
   const blogFormRef = useRef();
 
   useEffect(() => {
@@ -62,31 +68,41 @@ const App = () => {
     }
   };
 
-  if (user !== null) {
-    return (
-      <div>
-        <Notification notification={notification} />
-        <h2>blogs</h2>
-        <p>
-          {user.name} logged in{" "}
-          <button type="submit" onClick={logout} data-cy="logout-submit">
-            logout
-          </button>
-        </p>
-        <Togglable ref={blogFormRef} buttonLabel="create new">
-          <BlogForm onBlogCreate={handleBlogCreate} />
-        </Togglable>
-        <BlogList currentUser={user.name} />
-      </div>
-    );
-  }
-
   return (
     <div>
       <Notification notification={notification} />
-      <div>
-        <LoginForm login={login} />
-      </div>
+      <h2>blogs</h2>
+      {user ? (
+        <>
+          <div>
+            {user.name} logged in{" "}
+            <button type="submit" onClick={logout} data-cy="logout-submit">
+              logout
+            </button>
+          </div>
+
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  {" "}
+                  <Togglable ref={blogFormRef} buttonLabel="create new">
+                    <BlogForm onBlogCreate={handleBlogCreate} />
+                  </Togglable>
+                  {/* <BlogList currentUser={user.name} /> */}
+                  <BlogList currentUser={"asfasdf"} />
+                </>
+              }
+            />
+            <Route path="/users" element={<UserList />} />
+          </Routes>
+        </>
+      ) : (
+        <div>
+          <LoginForm login={login} />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import Blog from "./Blog";
 import {
   fetchBlogs,
   selectSortedBlogs,
   updateBlog,
   removeBlog,
-} from "../reducers/blogSlice";
-import { useSelector, useDispatch } from "react-redux";
-import Blog from "./Blog";
-import { showNotificationWithTimeout } from "../reducers/notificationSlice";
+  showNotificationWithTimeout,
+} from "../reducers";
 
 const BlogList = ({ currentUser }) => {
   const dispatch = useDispatch();
