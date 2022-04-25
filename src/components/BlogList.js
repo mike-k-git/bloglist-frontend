@@ -2,12 +2,9 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Link } from "react-router-dom";
-//import Blog from "./Blog";
 import {
   fetchBlogs,
   selectSortedBlogs,
-  // updateBlog,
-  // removeBlog,
   showNotificationWithTimeout,
 } from "../reducers";
 

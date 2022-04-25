@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, NavLink } from "react-router-dom";
 
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
@@ -24,6 +24,8 @@ const App = () => {
   const { notification, user } = useSelector((state) => state);
   const dispatch = useDispatch();
   const blogFormRef = useRef();
+
+  const activeClassName = "underline";
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedUser");
@@ -72,35 +74,60 @@ const App = () => {
 
   return (
     <div>
-      <Notification notification={notification} />
-      <h2>blogs</h2>
-      {user ? (
-        <>
-          <div>
-            {user.name} logged in{" "}
-            <button type="submit" onClick={logout} data-cy="logout-submit">
-              logout
-            </button>
-          </div>
-
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  {" "}
-                  <Togglable ref={blogFormRef} buttonLabel="create new">
-                    <BlogForm onBlogCreate={handleBlogCreate} />
-                  </Togglable>
-                  <BlogList currentUser={user.name} />
-                </>
+      <nav>
+        <ul className="menu">
+          <li>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive ? activeClassName : undefined
               }
-            />
-            <Route path="/blogs/:id" element={<Blog />} />
-            <Route path="/users" element={<UserList />} />
-            <Route path="/users/:id" element={<User />} />
-          </Routes>
-        </>
+            >
+              blogs
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/users"
+              className={({ isActive }) =>
+                isActive ? activeClassName : undefined
+              }
+            >
+              users
+            </NavLink>
+          </li>
+          {user && (
+            <li>
+              <div>
+                {user.name} logged in{" "}
+                <button type="submit" onClick={logout} data-cy="logout-submit">
+                  logout
+                </button>
+              </div>
+            </li>
+          )}
+        </ul>
+      </nav>
+      <Notification notification={notification} />
+      <h2>blog app</h2>
+      {user ? (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                {" "}
+                <Togglable ref={blogFormRef} buttonLabel="create new">
+                  <BlogForm onBlogCreate={handleBlogCreate} />
+                </Togglable>
+                <BlogList currentUser={user.name} />
+              </>
+            }
+          />
+          <Route path="/blogs/:id" element={<Blog />} />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/users/:id" element={<User />} />
+        </Routes>
       ) : (
         <div>
           <LoginForm login={login} />
