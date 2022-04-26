@@ -18,6 +18,11 @@ const create = async (newBlog) => {
   return response.data;
 };
 
+const comment = async ({ id, text }) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { text });
+  return response.data;
+};
+
 const update = async (blogToUpdate) => {
   const response = await axios.put(
     `${baseUrl}/${blogToUpdate.id}`,
@@ -31,4 +36,11 @@ const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`, config);
 };
 
-export const blogService = { getAll, create, setToken, update, remove };
+export const blogService = {
+  getAll,
+  create,
+  setToken,
+  update,
+  remove,
+  comment,
+};

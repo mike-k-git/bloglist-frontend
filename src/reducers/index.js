@@ -4,6 +4,7 @@ export {
   removeBlog,
   selectSortedBlogs,
   updateBlog,
+  commentBlog,
   default as blogReducer,
 } from "./blogSlice";
 

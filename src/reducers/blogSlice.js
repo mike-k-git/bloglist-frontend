@@ -18,6 +18,9 @@ const blogSlice = createSlice({
       )
       .addCase(removeBlog.fulfilled, (state, action) =>
         state.filter((b) => b.id !== action.meta.arg)
+      )
+      .addCase(commentBlog.fulfilled, (state, action) =>
+        state.map((b) => (b.id !== action.payload.id ? b : action.payload))
       );
   },
 });
@@ -45,4 +48,9 @@ export const updateBlog = createAsyncThunk(
 export const removeBlog = createAsyncThunk(
   "blogs/blogRemoved",
   async (id) => await blogService.remove(id)
+);
+
+export const commentBlog = createAsyncThunk(
+  "blogs/blogCommented",
+  async (data) => await blogService.comment(data)
 );

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateBlog, removeBlog } from "../reducers";
+import { updateBlog, removeBlog, commentBlog } from "../reducers";
 
 const Blog = () => {
   const id = useParams().id;
@@ -41,6 +41,17 @@ const Blog = () => {
     }
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await dispatch(
+        commentBlog({ id: blog.id, text: event.target.comment.value })
+      ).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h1>{blog.title}</h1>
@@ -57,6 +68,10 @@ const Blog = () => {
         </div>
       )}
       <h3>comments</h3>
+      <form onSubmit={handleSubmit}>
+        <input name="comment" />
+        <button>add comment</button>
+      </form>
       {blog.comments && (
         <ul>
           {blog.comments.map((comment) => (
