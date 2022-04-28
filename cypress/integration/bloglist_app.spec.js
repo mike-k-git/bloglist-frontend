@@ -36,7 +36,7 @@ describe("Blog app", () => {
       cy.get("[data-cy=notification]").should(
         "have.css",
         "color",
-        "rgb(255, 0, 0)"
+        "rgb(185, 28, 28)"
       );
       cy.get("[data-cy=login-form]");
     });
@@ -54,6 +54,7 @@ describe("Blog app", () => {
       cy.get("[data-cy=blog-url]").type("https://reactpatterns.com/");
       cy.get("[data-cy=blog-create]").click();
       cy.visit("http://localhost:3000");
+      cy.get("[data-cy=blog-item]").click();
 
       cy.contains("React patterns");
       cy.contains("Michael Chan");
@@ -70,13 +71,13 @@ describe("Blog app", () => {
       });
 
       it("can like a blog", function () {
-        cy.get("[data-cy=show-bloginfo]").click();
+        cy.get("[data-cy=blog-item]").click();
         cy.get("[data-cy=like-submit]").click();
-        cy.contains("likes 1");
+        cy.contains("1 like");
       });
 
       it("can remove own blog", function () {
-        cy.get("[data-cy=show-bloginfo]").click();
+        cy.get("[data-cy=blog-item]").click();
         cy.get("[data-cy=blog-remove]").click();
         cy.contains("React patterns").should("not.exist");
         cy.contains("Michael Chan").should("not.exist");
@@ -88,7 +89,7 @@ describe("Blog app", () => {
         });
 
         it("cannot remove blog", function () {
-          cy.get("[data-cy=show-bloginfo]").click();
+          cy.get("[data-cy=blog-item]").click();
           cy.get("[data-cy=blog-remove]").should("not.exist");
         });
       });
@@ -121,7 +122,6 @@ describe("Blog app", () => {
       });
 
       it("and ordered according to likes with the blog with the most likes being first", function () {
-        cy.get("[data-cy=show-bloginfo]").click({ multiple: true });
         cy.get("[data-cy=blog-item]")
           .first()
           .should("contain", "Canonical string reduction");

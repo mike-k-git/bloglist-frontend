@@ -9,16 +9,6 @@ import {
 } from "../reducers";
 
 const BlogList = () => {
-  const style = {
-    fontSize: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    border: "solid",
-    marginTop: 5,
-    marginBottom: 5,
-    lineHeight: "1.5em",
-  };
   const dispatch = useDispatch();
   const blogs = useSelector(selectSortedBlogs);
   useEffect(() => {
@@ -34,12 +24,20 @@ const BlogList = () => {
   }, [dispatch]);
 
   return (
-    <div>
-      {blogs.map((blog) => (
-        <div style={style} key={blog.id}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
-      ))}
+    <div className="m-4">
+      <ul>
+        {blogs.map((blog) => (
+          <li key={blog.id}>
+            <Link
+              to={`/blogs/${blog.id}`}
+              className="text-lg tracking-wide hover:bg-orange-300"
+              data-cy="blog-item"
+            >
+              {blog.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

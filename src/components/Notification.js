@@ -3,14 +3,13 @@ import PropTypes from "prop-types";
 const Notification = (props) => {
   const { text, type } = props.notification;
   if (!text) return null;
-  const style = {
-    color: type === "success" ? "green" : "red",
-    fontSize: 20,
-    borderRadius: 5,
-    borderStyle: "dashed",
-  };
+  const success = "bg-green-100 py-5 px-6 mb-4 text-base text-green-700 mb-3";
+  const error = "bg-red-100 py-5 px-6 mb-4 text-base text-red-700 mb-3";
   return (
-    <div style={style} data-cy="notification">
+    <div
+      className={type === "success" ? success : error}
+      data-cy="notification"
+    >
       {text}
     </div>
   );
